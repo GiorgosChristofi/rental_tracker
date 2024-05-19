@@ -31,7 +31,7 @@ def checkWebsite():
             iw_res = iw.check_website(proxy)
             kn_res = kn.check_website(proxy)
             pa_res = pa.check_website(proxy)
-            if (pa_res or kn_res or iw_res):
+            if pa_res or kn_res or iw_res:
                 pc.invalidateProxy(proxy)
             sleepFunct(30, 60)
         except Exception as e:
