@@ -7,6 +7,9 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+
+*.ini
+*__pycache__*
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

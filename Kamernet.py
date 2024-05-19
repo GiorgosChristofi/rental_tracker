@@ -4,6 +4,7 @@ import time
 import requests
 from EmailSender import EmailSender
 
+
 class kamernet_scraper:
 
     def __init__(self):
@@ -17,7 +18,7 @@ class kamernet_scraper:
                 "name": "Delft"
             },
             "radiusId": 1,
-            "listingTypeIds": [2,4],
+            "listingTypeIds": [2, 4],
             "maxRentalPriceId": 0,
             "surfaceMinimumId": 2,
             "listingSortOptionId": 1,
@@ -53,12 +54,10 @@ class kamernet_scraper:
         self.prevIds = []
         self.read_prev_ids()
 
-
     def read_prev_ids(self):
-        reader = open("kamernet.txt", "r")
-        for line in reader:
-            self.prevIds.append(line.strip())
-        reader.close()
+        with open("kamernet.txt", "r") as reader:
+            for line in reader:
+                self.prevIds.append(line.strip())
 
     def check_website(self, proxy):
         print("Checking...")
@@ -74,13 +73,13 @@ class kamernet_scraper:
             for listing in data["listings"]:
                 if str(listing["listingId"]) not in self.prevIds:
                     self.prevIds.append(str(listing["listingId"]))
-                    self.es.send_email("New listing", "NEW LISTING https://kamernet.nl/en/for-rent/studio-delft/c.-fockstraat/studio-" + str(listing["listingId"]))
-                    writer = open("kamernet.txt", "a")
-                    writer.write(str(listing["listingId"]) + "\n")
-                    writer.close()
+                    self.es.send_email("New listing",
+                                       "NEW LISTING https://kamernet.nl/en/for-rent/studio-delft/c.-fockstraat/studio-" + str(
+                                           listing["listingId"]))
+                    with open("kamernet.txt", "a") as writer:
+                        writer.write(str(listing["listingId"]) + "\n")
             return True
         except Exception as e:
             print("Error in response")
             print(e)
             return False
-

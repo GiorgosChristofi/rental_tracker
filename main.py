@@ -42,5 +42,4 @@ def checkWebsite():
 
 
 if __name__ == "__main__":
-    es.send_email("test", "test")
     checkWebsite()

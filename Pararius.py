@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from EmailSender import EmailSender
 
+
 class pararius_scraper:
 
     def __init__(self):
@@ -18,7 +19,7 @@ class pararius_scraper:
                 "name": "Delft"
             },
             "radiusId": 1,
-            "listingTypeIds": [2,4],
+            "listingTypeIds": [2, 4],
             "maxRentalPriceId": 0,
             "surfaceMinimumId": 2,
             "listingSortOptionId": 1,
@@ -54,12 +55,10 @@ class pararius_scraper:
         self.prevLinks = []
         self.read_previous_links()
 
-
     def read_previous_links(self):
-        reader = open("pararius.txt", "r")
-        for line in reader:
-            self.prevLinks.append(line.strip())
-        reader.close()
+        with open("pararius.txt", "r") as reader:
+            for line in reader:
+                self.prevLinks.append(line.strip())
 
     def check_website(self, proxy):
         proxies = {"https": proxy}
@@ -76,27 +75,26 @@ class pararius_scraper:
             soup = BeautifulSoup(source, "html.parser")
 
             #check if it got flagged
-            if len(soup.findAll('body', {"id":"fl-captcha"})) != 0:
+            if len(soup.findAll('body', {"id": "fl-captcha"})) != 0:
                 print("Got flagged")
                 raise RuntimeError("Got flagged")
 
-
             h2s = soup.find_all("h2")
-            linkFile = open('pararius.txt', 'a')
-            print("Found " + str(len(h2s)) + " links")
-            for h2 in h2s:
-                if not (h2.a is None):
-                    link = h2.a['href']
-                    if not (link in self.prevLinks) and not link is None:
-                        self.prevLinks.append(link)
-                        linkFile.write(link + "\n")
-                        msg = 'https://www.pararius.com' + link
-                        print("Message to send: " + msg)
-                        es.send_email("New listing", msg)
-            linkFile.close()
+            with open('pararius.txt', 'a') as linkFile:
+                print("Found " + str(len(h2s)) + " links")
+                for h2 in h2s:
+                    if not (h2.a is None):
+                        link = h2.a['href']
+                        if not (link in self.prevLinks) and not link is None:
+                            self.prevLinks.append(link)
+                            linkFile.write(link + "\n")
+                            msg = 'https://www.pararius.com' + link
+                            print("Message to send: " + msg)
+                            self.es.send_email("New listing", msg)
             session.close()
             return True
         except Exception as e:
+            print("Error in pararius")
             print(e)
             session.close()
             return False

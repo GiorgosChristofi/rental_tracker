@@ -79,4 +79,3 @@
 /apartment-for-rent/delft/444d39d9/caspar-fagelstraat
 /room-for-rent/delft/ce20d8f0/buitenwatersloot
 /apartment-for-rent/delft/2360e34a/griegstraat
-/apartment-for-rent/delft/37e3c54c/koornmarkt
